@@ -1,0 +1,44 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<dom-module id="list-item">
+    <template>
+        <style>
+            :host {
+                display: flex;
+                box-shadow: 0 0 1px rgba(0,0,0,0.1), 0 1px 1px rgba(0,0,0,0.25);
+                margin: 10px 0;
+                min-height: 40px;
+                padding: 5px;
+                background: #f6f6f6;
+                box-sizing: border-box;
+            }
+            p{
+                width:90%;
+                margin: auto 0;
+            }
+        </style>
+        <p>[[text]]</p>
+        <paper-icon-button on-tap="delete" icon="close" title="Remove todo"></paper-icon-button>
+        
+    </template>
+    <script>
+        Polymer({
+            is: 'list-item',
+            properties:{
+                text: {
+                    type: String,
+                    value: ""
+                },
+                deleteItem: {
+                    type: String,
+                    value:""
+                }
+            },
+            delete: function(){
+                this.fire(this.deleteItem);
+            }
+        });
+    </script>
+</dom-module>

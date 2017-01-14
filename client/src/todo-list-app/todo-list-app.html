@@ -1,0 +1,161 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../card-item/card-item.html">
+
+<dom-module id="todo-list-app">
+  <template>
+    <style>
+      :host {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin: 50px 0 100px 0;
+      }
+      .action-area {
+        display:flex;
+        min-height: 150px;
+        width: 100%;
+        background: #fff;
+        position: fixed;
+        bottom: 0;
+        z-index:1;
+      }
+      .action {
+        width:100%;
+        padding:5px 10px;
+      }
+      .action .inline {
+        display:flex;
+        width:100%;
+        align-items: flex-end;
+      }
+      paper-input {
+        width:100%;
+        margin:0 5px;
+      }
+      .add-list {
+        background: #448AFF;
+        color: white;
+      }
+      .add-todo {
+        background: #4CAF50;
+        color: white;
+      }
+      paper-dropdown-menu {
+        width:100%;
+        margin:0 5px;
+      }
+
+    </style>
+    
+    <template id="listRepeater" is="dom-repeat" items="[[lists]]" as="list">
+      <card-item id$="[[list._id]]" 
+      title="[[list.title]]" 
+      todos="[[list.todos]]" 
+      delete-card="deleteList"
+      delete-item="deleteTodo"></card-item>
+    </template>
+    <div class="action-area">
+      <div class="action">
+        <div class="inline">
+          <paper-input label="Add List" id="listText"></paper-input>
+          <paper-button raised on-tap="addList" class="add-list">Add</paper-button>
+        </div>
+      </div>
+      <div class="action">
+        <paper-dropdown-menu label="Group">
+          <paper-listbox class="dropdown-content" on-iron-select="itemSelected" >
+              <template is="dom-repeat" items="[[lists]]" as="list">
+                  <paper-item reference$="[[list._id]]">[[list.title]]</paper-item>
+              </template>
+          </paper-listbox>
+        </paper-dropdown-menu>
+        <div class="inline">
+          <paper-input label="Add Todo" id="todoText"></paper-input>
+          <paper-button raised on-tap="addTodo" class="add-todo">Add</paper-button>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'todo-list-app',
+
+      properties: {
+        lists: {
+          type: Array,
+          value: []
+        },
+        selectedList: {
+          type:String,
+          value:null
+        }
+      },
+      listeners: {
+        'deleteList': 'removeList',
+        'deleteTodo': 'removeItem'
+      },
+      ready: function(){
+        axios.get('/getAllLists').then(function(items){
+          this.lists = items.data;
+        }.bind(this))
+      },
+      addList: function(){
+        var _this = this;
+        axios.post('/addList',{'title': this.$.listText.value}).then(function(list){
+          _this.push("lists",list.data);
+        })
+      },
+      removeList: function(evt){
+        var _this = this;
+        var listId = evt.target.getAttribute("id");
+        axios.delete('/removeList?listId='+listId).then(function(){
+          _this.lists.forEach(function(list,listIndex){
+            if(list._id === listId)
+              _this.splice('lists', listIndex, 1);
+          })
+        })
+      },
+      addTodo: function(){
+        var _this = this;
+        if(this.selectedList){
+          axios.post('/addTodo',{'listId': this.selectedList, "todo": {"text":this.$.todoText.value}}).then(function(todo){
+            _this.lists.forEach(function(list,listIndex){
+              if(list._id === _this.selectedList)
+                _this.push('lists.'+listIndex+'.todos',todo.data);
+            })
+          })
+        }
+
+      },
+      removeItem: function(evt){
+        var listId = evt.target.parentNode.getAttribute("id");
+        var todoId = evt.target.getAttribute("id");
+        var _this = this;
+        axios.delete('/removeTodo?listId='+listId+'&todoId='+todoId).then(function(){
+          _this.lists.forEach(function(list,listIndex){
+            if(list._id === listId){
+              list.todos.forEach(function(todo,todoIndex){
+                if(todo._id === todoId)
+                  _this.splice('lists.'+listIndex+'.todos', todoIndex, 1);
+              })
+            }
+          })
+        })
+      },
+      itemSelected: function(evt){
+        var selectedItem = evt.target.selectedItem;
+          if (selectedItem) {
+              this.selectedList = selectedItem.getAttribute('reference');
+          }
+        }
+        
+    });
+  </script>
+</dom-module>

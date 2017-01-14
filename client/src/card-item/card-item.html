@@ -1,0 +1,65 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../list-item/list-item.html">
+<dom-module id="card-item">
+    <template>
+        <style>
+            :host {
+                display: block;
+                background:white;
+                box-shadow: 0 0 1px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.25);
+                min-width:250px;
+                height:300px;
+                margin:15px;
+                padding:10px;
+                overflow-x:hidden;
+            }
+            h2{
+                border-bottom: 1px solid #dddddd;
+                text-overflow: ellipsis;
+                max-width: 300px;
+                overflow: hidden;
+                width:85%;
+            }
+            .top-bar{
+                display:flex;
+                width:100%;
+            }
+        </style>
+        <div class="top-bar">
+            <h2>[[title]]</h2>
+            <paper-icon-button on-tap="delete" icon="close" title="Remove todo"></paper-icon-button>
+        </div>
+        <template is="dom-repeat" items="[[todos]]" as="todo">
+            <list-item id$="[[todo._id]]" text="[[todo.text]]" delete-item="[[deleteItem]]"></list-item>
+        </template>
+    </template>
+    <script>
+        Polymer({
+            is: 'card-item',
+            properties:{
+                title: {
+                    type: String,
+                    value: ""
+                },
+                todos: {
+                    type: Array,
+                    value:[]
+                },
+                deleteCard: {
+                    type: String,
+                    value:""
+                },
+                deleteItem: {
+                    type: String,
+                    value:""
+                }
+            },
+            delete: function(){
+                this.fire(this.deleteCard);
+            }
+        });
+    </script>
+</dom-module>
