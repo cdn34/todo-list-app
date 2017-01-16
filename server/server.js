@@ -5,7 +5,7 @@ const compression = require('compression');
 const bodyParser = require('body-parser');
 const mongoose = require('./database/mongoose');
 const path = require('path');
-const port = 3000;
+const port = 80;
 
 app.use(bodyParser.json({limit: '10mb'}));//limit to 10mb for body request
 app.use(bodyParser.urlencoded({extended: false}));
