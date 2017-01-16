@@ -4,7 +4,7 @@ const mongoUrl = "mongodb://adm:admpass@ds111479.mlab.com:11479/heroku_wcj97z3g"
 
 
 const mongooseConnect = _ => {
-    console.log('Mongoose started');
+    //console.log('Mongoose started');
     mongoose.connect(mongoUrl);
 }
 
