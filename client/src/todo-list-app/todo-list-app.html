@@ -10,12 +10,19 @@
   <template>
     <style>
       :host {
+        display: -webkit-box;
+        display: -ms-flexbox;
         display: flex;
-        justify-content: center;
-        flex-wrap: wrap;
+        -webkit-box-pack: center;
+            -ms-flex-pack: center;
+                justify-content: center;
+        -ms-flex-wrap: wrap;
+            flex-wrap: wrap;
         margin: 50px 0 100px 0;
       }
       .action-area {
+        display:-webkit-box;
+        display:-ms-flexbox;
         display:flex;
         min-height: 150px;
         width: 100%;
@@ -29,9 +36,13 @@
         padding:5px 10px;
       }
       .action .inline {
+        display:-webkit-box;
+        display:-ms-flexbox;
         display:flex;
         width:100%;
-        align-items: flex-end;
+        -webkit-box-align: end;
+            -ms-flex-align: end;
+                align-items: flex-end;
       }
       paper-input {
         width:100%;
