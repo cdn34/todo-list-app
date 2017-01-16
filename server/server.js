@@ -5,7 +5,10 @@ const compression = require('compression');
 const bodyParser = require('body-parser');
 const mongoose = require('./database/mongoose');
 const path = require('path');
-const port = 80;
+
+// set the port of our application
+// process.env.PORT lets the port be set by Heroku
+const port = process.env.PORT || 3000;
 
 app.use(bodyParser.json({limit: '10mb'}));//limit to 10mb for body request
 app.use(bodyParser.urlencoded({extended: false}));
